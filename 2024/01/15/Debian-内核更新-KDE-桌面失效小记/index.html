@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="废话不多说，上脚本 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495969798991">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Debian 内核更新 KDE 桌面失效小记">
+<meta property="og:url" content="https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Kttol&#39;s Blog">
+<meta property="og:description" content="废话不多说，上脚本 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192939495969798991">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-14T17:32:19.000Z">
+<meta property="article:modified_time" content="2024-12-29T20:45:32.112Z">
+<meta property="article:author" content="Kt Tol">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/blog/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/blog/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Debian 内核更新 KDE 桌面失效小记</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BD8BJ0FF3H"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BD8BJ0FF3H');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/blog/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/blog/true" title="Kttol&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/blog/">首页</a></li><!--
+     --><!--
+       --><li><a href="/blog/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/blog/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/KevinTong9">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/blog/2024/01/31/Centos7-haproxy%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E6%9C%8D%E5%8A%A1%E5%B0%8F%E8%AE%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&text=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&is_video=false&description=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Debian 内核更新 KDE 桌面失效小记&body=Check out this article: https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&name=Debian 内核更新 KDE 桌面失效小记&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&t=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Debian 内核更新 KDE 桌面失效小记
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Kt Tol</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-01-14T17:32:19.000Z" class="dt-published" itemprop="datePublished">2024-01-15</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p>废话不多说，上脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新系统内核</span></span><br><span class="line">sudo apt update &amp;&amp; sudo apt upgrade</span><br><span class="line"></span><br><span class="line"><span class="comment"># 若此时重启会在开机时卡在组件加载，无法进入KDE，切换原内核后一切正常</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 不使用KDE重启</span></span><br><span class="line">sudo systemctl set-default multi-user.target    </span><br><span class="line">sudo reboot</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重装相关GPU驱动（AMD 5625U APU）</span></span><br><span class="line">sudo apt reinstall xserver-xorg-video-amdgpu</span><br><span class="line">sudo apt update --fix-missing</span><br><span class="line"></span><br><span class="line">sudo update-initramfs -u</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查出了realtek的问题，顺带修复</span></span><br><span class="line">sudo apt reinstall firmware-realtek</span><br><span class="line"></span><br><span class="line">sudo update-initramfs -u</span><br><span class="line"></span><br><span class="line">dpkg -l | grep amdgpu</span><br><span class="line"></span><br><span class="line">sudo apt remove --purge fgirx*</span><br><span class="line">sudo apt remove --purge xserver-xorg-video-ati</span><br><span class="line">sudo apt remove --purge xserver-xorg-video-amdgpu</span><br><span class="line">sudo apt remove libdrm-amdgpu1:i386</span><br><span class="line"></span><br><span class="line">sudo apt install --reinstall libgl1-mesa-glx libgl1-mesa-dri xserver-xorg-core</span><br><span class="line"></span><br><span class="line">sudo dpkg-reconfigure xserver-xorg</span><br><span class="line">sudo update-initramfs -u</span><br><span class="line">sudo update-grub</span><br><span class="line"></span><br><span class="line">sudo apt-get install --reinstall firmware-amd-graphics libgl1-mesa-dri libglx-mesa0 mesa-vulkan-drivers xserver-xorg-video-all</span><br><span class="line">sudo reboot</span><br><span class="line"></span><br><span class="line"><span class="comment"># 此时并没有解决问题，进入命令行系统时显卡驱动并未加载</span></span><br><span class="line"></span><br><span class="line">sudo systemctl set-default multi-user.target</span><br><span class="line">sudo systemctl isolate graphical.target</span><br><span class="line"><span class="comment"># 失败</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> /var/log/Xorg.0.<span class="built_in">log</span> | grep <span class="string">&#x27;(EE)&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#   (WW) warning, (EE) error, (NI) not implemented, (??) unknown.</span></span><br><span class="line"><span class="comment"># [  1172.091] (EE) Failed to load module &quot;amdgpu&quot; (module does not exist, 0)</span></span><br><span class="line"><span class="comment"># 此处并无amdgpu模块加载</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">ls</span> /lib/modules/$(<span class="built_in">uname</span> -r)/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko</span><br><span class="line"><span class="comment"># /lib/modules/6.1.0-16-amd64/kernel/drivers/gpu/drm/amd/amdgpu/amdgpu.ko</span></span><br><span class="line"><span class="comment"># 检查对应模块存在</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install xserver-xorg-video-amdgpu</span><br><span class="line">sudo update-initramfs -u</span><br><span class="line">sudo reboot</span><br><span class="line"></span><br><span class="line">startx</span><br><span class="line"><span class="comment"># 正常</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查询开机模块启动策略</span></span><br><span class="line">nano /etc/modules-load.d/modules.conf</span><br><span class="line">sudo nano /etc/modules-load.d/modules.conf</span><br><span class="line"></span><br><span class="line"><span class="comment"># 此处有不知名黑名单禁用了amdgpu，注释或删除即可</span></span><br><span class="line"><span class="built_in">cat</span> /etc/modprobe.d/blacklist-amdgpu.conf</span><br><span class="line"><span class="comment"># blacklist amdgpu</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">ls</span> /etc/modprobe.d/</span><br><span class="line"><span class="built_in">cat</span> /etc/modprobe.d/blacklist-amdgpu.conf</span><br><span class="line">sudo nano /etc/default/grub</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /etc/modprobe.d</span><br><span class="line">sudo nano blacklist-amdgpu.conf</span><br><span class="line">sudo update-initramfs -u</span><br><span class="line"></span><br><span class="line"><span class="comment">#update-initramfs: Generating /boot/initrd.img-6.1.0-16-amd64</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/ip_discovery.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/vega10_cap.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/sienna_cichlid_cap.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/navi12_cap.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/psp_13_0_11_ta.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/psp_13_0_11_toc.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/psp_13_0_10_ta.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/psp_13_0_10_sos.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/aldebaran_cap.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_3_imu.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_4_rlc.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_4_mec.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_4_me.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_4_pfp.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_3_rlc.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_3_mec.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_3_me.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_3_pfp.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_0_toc.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/sdma_6_0_3.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/sienna_cichlid_mes1.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/sienna_cichlid_mes.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/navi10_mes.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_4_mes1.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_4_mes_2.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_4_mes.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_3_mes1.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_3_mes_2.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_3_mes.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_2_mes_2.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_1_mes_2.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/gc_11_0_0_mes_2.bin for module amdgpu</span></span><br><span class="line"><span class="comment">#W: Possible missing firmware /lib/firmware/amdgpu/smu_13_0_10.bin for module amdgpu</span></span><br><span class="line"></span><br><span class="line">sudo systemctl set-default graphical.target</span><br><span class="line"><span class="comment"># 一切正常</span></span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/blog/">首页</a></li>
+        
+          <li><a href="/blog/about/">关于</a></li>
+        
+          <li><a href="/blog/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/KevinTong9">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&text=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&is_video=false&description=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Debian 内核更新 KDE 桌面失效小记&body=Check out this article: https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&title=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&name=Debian 内核更新 KDE 桌面失效小记&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://kevintong9.github.io/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/&t=Debian 内核更新 KDE 桌面失效小记"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    Kt Tol
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/blog/">首页</a></li><!--
+     --><!--
+       --><li><a href="/blog/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/blog/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/KevinTong9">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/blog/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+  <script type="text/javascript">
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?0927cad4cfcdc315bfb53e77070dbd8e";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

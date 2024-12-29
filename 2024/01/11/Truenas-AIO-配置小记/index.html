@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="提要 硬件选配，组装，测试 TrueNas 基础配置 安装 基础配置   网络配置 阵列配置 Kubernetes配置 syncthing 基础配置（使用逻辑） 服务器端 客户端   数据集权限配置（Linux POSIX ACL）   photoprism 配置 基础配置（存储管理）   flame 配置   OpenWRT 虚拟化配置 空间拓展 OpenWRT 配置     OpenVPN配">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Truenas AIO 配置小记">
+<meta property="og:url" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Kttol&#39;s Blog">
+<meta property="og:description" content="提要 硬件选配，组装，测试 TrueNas 基础配置 安装 基础配置   网络配置 阵列配置 Kubernetes配置 syncthing 基础配置（使用逻辑） 服务器端 客户端   数据集权限配置（Linux POSIX ACL）   photoprism 配置 基础配置（存储管理）   flame 配置   OpenWRT 虚拟化配置 空间拓展 OpenWRT 配置     OpenVPN配">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-1.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-2.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-3.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-4.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-5.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-6.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-7.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-8.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-9.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-10.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-12.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-13.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-11.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-14.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-15.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-16.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-17.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-18.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-19.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-20.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-23.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-21.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-22.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-25.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-26.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-27.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-28.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-29.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-30.png">
+<meta property="og:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-24.png">
+<meta property="article:published_time" content="2024-01-11T05:35:01.000Z">
+<meta property="article:modified_time" content="2024-12-29T20:45:32.113Z">
+<meta property="article:author" content="Kt Tol">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/blog/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/blog/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Truenas AIO 配置小记</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BD8BJ0FF3H"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BD8BJ0FF3H');
+  </script>
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/blog/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+      <link rel="alternate" href="/blog/true" title="Kttol&#39;s Blog" type="application/atom+xml" />
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="目录"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="顶部" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/blog/">首页</a></li><!--
+     --><!--
+       --><li><a href="/blog/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/blog/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/KevinTong9">项目</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇" href="/blog/2024/01/15/Debian-%E5%86%85%E6%A0%B8%E6%9B%B4%E6%96%B0-KDE-%E6%A1%8C%E9%9D%A2%E5%A4%B1%E6%95%88%E5%B0%8F%E8%AE%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇" href="/blog/2024/01/11/hello-world/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&text=Truenas AIO 配置小记"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&is_video=false&description=Truenas AIO 配置小记"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Truenas AIO 配置小记&body=Check out this article: https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&name=Truenas AIO 配置小记&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&t=Truenas AIO 配置小记"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E8%A6%81"><span class="toc-number">1.</span> <span class="toc-text">提要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E9%80%89%E9%85%8D%EF%BC%8C%E7%BB%84%E8%A3%85%EF%BC%8C%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">硬件选配，组装，测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TrueNas"><span class="toc-number">3.</span> <span class="toc-text">TrueNas</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="toc-number">3.1.</span> <span class="toc-text">基础配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.1.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE-1"><span class="toc-number">3.1.2.</span> <span class="toc-text">基础配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE"><span class="toc-number">3.2.</span> <span class="toc-text">网络配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B5%E5%88%97%E9%85%8D%E7%BD%AE"><span class="toc-number">3.3.</span> <span class="toc-text">阵列配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kubernetes%E9%85%8D%E7%BD%AE"><span class="toc-number">3.4.</span> <span class="toc-text">Kubernetes配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#syncthing"><span class="toc-number">3.4.1.</span> <span class="toc-text">syncthing</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%EF%BC%88%E4%BD%BF%E7%94%A8%E9%80%BB%E8%BE%91%EF%BC%89"><span class="toc-number">3.4.1.1.</span> <span class="toc-text">基础配置（使用逻辑）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"><span class="toc-number">3.4.1.1.1.</span> <span class="toc-text">服务器端</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">3.4.1.1.2.</span> <span class="toc-text">客户端</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%9D%83%E9%99%90%E9%85%8D%E7%BD%AE%EF%BC%88Linux-POSIX-ACL%EF%BC%89"><span class="toc-number">3.4.1.2.</span> <span class="toc-text">数据集权限配置（Linux POSIX ACL）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#photoprism-%E9%85%8D%E7%BD%AE"><span class="toc-number">3.4.2.</span> <span class="toc-text">photoprism 配置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%EF%BC%88%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%EF%BC%89"><span class="toc-number">3.4.2.1.</span> <span class="toc-text">基础配置（存储管理）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#flame-%E9%85%8D%E7%BD%AE"><span class="toc-number">3.4.3.</span> <span class="toc-text">flame 配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenWRT"><span class="toc-number">3.5.</span> <span class="toc-text">OpenWRT</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="toc-number">3.5.1.</span> <span class="toc-text">虚拟化配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A9%BA%E9%97%B4%E6%8B%93%E5%B1%95"><span class="toc-number">3.5.2.</span> <span class="toc-text">空间拓展</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OpenWRT-%E9%85%8D%E7%BD%AE"><span class="toc-number">3.5.3.</span> <span class="toc-text">OpenWRT 配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenVPN%E9%85%8D%E7%BD%AE"><span class="toc-number">4.</span> <span class="toc-text">OpenVPN配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenVPN%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">4.1.</span> <span class="toc-text">OpenVPN服务器配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-1"><span class="toc-number">4.1.1.</span> <span class="toc-text">安装</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenVPN%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">4.2.</span> <span class="toc-text">OpenVPN客户端配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenVPN-OpenWRT-%E9%85%8D%E7%BD%AE"><span class="toc-number">4.3.</span> <span class="toc-text">OpenVPN &amp; OpenWRT 配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E7%BD%91%E7%AB%99%E9%93%BE%E6%8E%A5"><span class="toc-number">6.</span> <span class="toc-text">参考网站链接</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Truenas AIO 配置小记
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Kt Tol</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-01-11T05:35:01.000Z" class="dt-published" itemprop="datePublished">2024-01-11</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <ul>
+<li><a href="#%E6%8F%90%E8%A6%81">提要</a></li>
+<li><a href="#%E7%A1%AC%E4%BB%B6%E9%80%89%E9%85%8D%E7%BB%84%E8%A3%85%E6%B5%8B%E8%AF%95">硬件选配，组装，测试</a></li>
+<li><a href="#truenas">TrueNas</a><ul>
+<li><a href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE">基础配置</a><ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE-1">基础配置</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE">网络配置</a></li>
+<li><a href="#%E9%98%B5%E5%88%97%E9%85%8D%E7%BD%AE">阵列配置</a></li>
+<li><a href="#kubernetes%E9%85%8D%E7%BD%AE">Kubernetes配置</a><ul>
+<li><a href="#syncthing">syncthing</a><ul>
+<li><a href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8%E9%80%BB%E8%BE%91">基础配置（使用逻辑）</a><ul>
+<li><a href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF">服务器端</a></li>
+<li><a href="#%E5%AE%A2%E6%88%B7%E7%AB%AF">客户端</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%9D%83%E9%99%90%E9%85%8D%E7%BD%AElinux-posix-acl">数据集权限配置（Linux POSIX ACL）</a></li>
+</ul>
+</li>
+<li><a href="#photoprism-%E9%85%8D%E7%BD%AE">photoprism 配置</a><ul>
+<li><a href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86">基础配置（存储管理）</a></li>
+</ul>
+</li>
+<li><a href="#flame-%E9%85%8D%E7%BD%AE">flame 配置</a></li>
+</ul>
+</li>
+<li><a href="#openwrt">OpenWRT</a><ul>
+<li><a href="#%E8%99%9A%E6%8B%9F%E5%8C%96%E9%85%8D%E7%BD%AE">虚拟化配置</a></li>
+<li><a href="#%E7%A9%BA%E9%97%B4%E6%8B%93%E5%B1%95">空间拓展</a></li>
+<li><a href="#openwrt-%E9%85%8D%E7%BD%AE">OpenWRT 配置</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#openvpn%E9%85%8D%E7%BD%AE">OpenVPN配置</a><ul>
+<li><a href="#openvpn%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE">OpenVPN服务器配置</a><ul>
+<li><a href="#%E5%AE%89%E8%A3%85-1">安装</a></li>
+</ul>
+</li>
+<li><a href="#openvpn%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE">OpenVPN客户端配置</a></li>
+<li><a href="#openvpn--openwrt-%E9%85%8D%E7%BD%AE">OpenVPN &amp; OpenWRT 配置</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li>
+<li><a href="#%E5%8F%82%E8%80%83%E7%BD%91%E7%AB%99%E9%93%BE%E6%8E%A5">参考网站链接</a></li>
+</ul>
+<h2 id="提要"><a href="#提要" class="headerlink" title="提要"></a>提要</h2><p>情况说明：</p>
+<ul>
+<li>双网口，带ECC，IPMI机器</li>
+<li>底层系统是TrueNAS-SCALE-23.10.1（核心用途是NAS，优先保障数据）</li>
+<li>需要OpenWRT虚拟机软路由（由于CPU虚拟化的缘故没能实现WIFI）</li>
+<li>防止数据带电跳变损坏</li>
+<li>音视频图片管理查看</li>
+<li>挂载下载</li>
+<li>需要本地机器环境私有远程访问（手机，平板，电脑，NAS等，不暴露公网但能远程访问）</li>
+</ul>
+<h2 id="硬件选配，组装，测试"><a href="#硬件选配，组装，测试" class="headerlink" title="硬件选配，组装，测试"></a>硬件选配，组装，测试</h2><p>要求：双网口（至少千兆）；支持虚拟化；有ECC（长期不断电防止内存跳变）；硬盘RAID5（防止数据跳变，添加数据冗余）；SATA口充足；无解码需求；有IPMI远程管理；主板尺寸，功耗，价格尽可能低</p>
+<p>配置单（均为二手）</p>
+<table>
+<thead>
+<tr>
+<th align="right">配置</th>
+<th align="left">型号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="right">CPU</td>
+<td align="left">Intel® Octa Core Avoton C2750 Processor</td>
+</tr>
+<tr>
+<td align="right">主板</td>
+<td align="left">Asrock C2750D4I</td>
+</tr>
+<tr>
+<td align="right">内存</td>
+<td align="left">Samsung M391B1G73EB0-YK0 - 1600MT&#x2F;s UDIMM 8G X4</td>
+</tr>
+<tr>
+<td align="right">显卡</td>
+<td align="left">ASPEED Graphic</td>
+</tr>
+<tr>
+<td align="right">硬盘</td>
+<td align="left">HC510 10T X3</td>
+</tr>
+<tr>
+<td align="right"></td>
+<td align="left">ZhiTai SATA 500G</td>
+</tr>
+<tr>
+<td align="right"></td>
+<td align="left">WD NGFF 500G</td>
+</tr>
+</tbody></table>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image.png" class="" title="主板">
+
+<p>调整主板跳线</p>
+<p>通电，BIOS，BMC，IPMI重置，更新最新固件，调整模式为UEFI+AHCI，去除PXE启动，跳过BMC自检等待，关闭开机LOGO（便于查看自检码），关闭板载阵列卡启动检查，开启SATA热插拔，开启IPMI远程串口调试</p>
+<h2 id="TrueNas"><a href="#TrueNas" class="headerlink" title="TrueNas"></a>TrueNas</h2><h3 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h3><h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>在<a target="_blank" rel="noopener" href="https://www.truenas.com/download-truenas-scale/">官网</a>下载Truenas Scale镜像</p>
+<p>下载链接：<a target="_blank" rel="noopener" href="https://download.sys.truenas.net/TrueNAS-SCALE-Cobia/23.10.1/TrueNAS-SCALE-23.10.1.iso">https://download.sys.truenas.net/TrueNAS-SCALE-Cobia/23.10.1/TrueNAS-SCALE-23.10.1.iso</a></p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-1.png" class="" title="截图">
+
+<p>检验文件SHA256后，放入已经安装了<a target="_blank" rel="noopener" href="https://www.ventoy.net/cn/index.html">Ventoy</a>的启动U盘，在NAS BIOS调整启动顺序，使得Truenas在UEFI安装即可</p>
+<h4 id="基础配置-1"><a href="#基础配置-1" class="headerlink" title="基础配置"></a>基础配置</h4><p>使用Web UI配置管理员密码（如果无法访问Web UI，需要先在终端使用指令设置网络）</p>
+<p>调整本地化设置</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-2.png" class="" title="本地化1">
+
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-3.png" class="" title="本地化2">
+
+<p>检查SATA口硬盘链接状态，开启SMART LONG检测任务</p>
+<p>检查硬件状态（内存容量，ECC等）</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-4.png" class="" title="硬件状态">
+
+<h3 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h3><p>默认情况下，enp7s0是wan端，开启DHCP，enp8s0不使用，不设置即可。</p>
+<p>但是由于有软路由需求，需要让TrueNAS变为lan端客户机，单网口处理不了，需要桥接，所以分别给wan端和lan端配置桥接，在桥接上分别设置IP。其中由于测试，wan端是192.168.1.0&#x2F;24网段，lan端为了防止冲突，选择B类中的127.16.0.0&#x2F;24（子网掩码24够用），其中192.168.1.1和172.16.0.1分别是wan端网关和OpenWRT地址，故设置如图：</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-5.png" class="" title="SET">
+
+<p>其中br0（OpenWRT-WAN）是enp7s0的桥接，br1（OpenWRT-LAN）是enp8s0的桥接，br1可以开启DHCP，但为了固定IP采用的静态地址。</p>
+<p>网关为了方便调试，先设置为192.168.1.1，后续调整OpenWRT完成后可以更改为172.16.0.1</p>
+<p>主机名自便，域名为了方便可以自己取一个一级域名如：“SSS”</p>
+<p>如果后续docker应用的拉取，或者系统更新有问题，自己有代理服务器的也可以手动添加一下HTTP代理</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-6.png" class="" title="SET">
+
+<p>题外话：Truenas竟然能直接在Web端配置IPMI的网络设置</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-7.png" class="" title="IPMI">
+
+<h3 id="阵列配置"><a href="#阵列配置" class="headerlink" title="阵列配置"></a>阵列配置</h3><p>注意，系统盘无法作为可使用盘加入阵列，加入阵列前需要做Smart测试，视情况测试，如是快递运输等，需要选择运输测试</p>
+<p>此次配置采用3个HC510组Raid5（RaidZ1），做数据储存和应用数据储存（确保文件数据不会自行跳变）</p>
+<p>单500G SSD组条带，做应用程序和配置储存</p>
+<h3 id="Kubernetes配置"><a href="#Kubernetes配置" class="headerlink" title="Kubernetes配置"></a>Kubernetes配置</h3><p>网络状况没有问题的情况下，开启应用，选择SSD作为存储池，初始化后即可</p>
+<p>选择Discover Apps选择自己想要使用的App，此处先选用syncthing，photoprism，flame，webdav，具体配置如下</p>
+<h4 id="syncthing"><a href="#syncthing" class="headerlink" title="syncthing"></a>syncthing</h4><h5 id="基础配置（使用逻辑）"><a href="#基础配置（使用逻辑）" class="headerlink" title="基础配置（使用逻辑）"></a>基础配置（使用逻辑）</h5><p>由于数据存放电脑上存在数据跳变（7*24通电的情况下，确实会遇到文件损坏，镜像文件校验失败或是音视频文件突然失效，显示格式损坏的问题。发生频率很少，但确实有），在有RAID5和ECC校验的NAS上几乎可以避免这种事情的发生，所以关键数据均需要以NAS作为标称</p>
+<p>其中NAS只是关键文件的备份，不是用于给主机瘦身，不能将所有文件都放在NAS上而本地不留存，故需要在写文件时往NAS写，读文件时从本地读的功能，而且需要自动保持单方向同步（即NAS文件变动，本地自动更改，本地文件变动，远端不变动）。</p>
+<p>在此之上，需要能支持手机访问（只拉取），电脑访问，而且需要授权，故采用Syncthing作为服务端。</p>
+<p>在Truenas中配置容器Synthing，由于存储位置并不是在SSD上，需要手动添加一个存储位置指针，在Extra Host Path Volumes中添加自己的HDD阵列存储路径到你指定的Mount Path in Pod</p>
+<p>比如将&#x2F;mnt&#x2F;HC510&#x2F;MAIN目录挂载到容器内的&#x2F;mnt&#x2F;MAIN，这样syncthing就可以在&#x2F;mnt&#x2F;MAIN访问到HDD了</p>
+<p>除此之外，整个系统是类似单用户多应用，故应用操作采用app用户身份，方便管理权限</p>
+<h6 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h6><p>设置设备名，编辑文件夹默认值，将文件夹路径设置为&#x2F;mnt&#x2F;MAIN，版本控制关闭（已采用TrueNas快照，不需要版本管理），文件夹接受类型改为只发送，开启忽略文件权限（已有自定义ACL）</p>
+<h6 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h6><p>设置设备名，编辑文件夹默认值，版本控制关闭，文件夹类型改为仅接收，开启忽略文件权限</p>
+<h5 id="数据集权限配置（Linux-POSIX-ACL）"><a href="#数据集权限配置（Linux-POSIX-ACL）" class="headerlink" title="数据集权限配置（Linux POSIX ACL）"></a>数据集权限配置（Linux POSIX ACL）</h5><p>由于需要保证数据集能被单用户使用，不被其他用户使用，单同时需要app和系统用户（syncthing同步）使用，故修改对应数据集（&#x2F;mnt&#x2F;HC510&#x2F;MAIN）的ACL权限如图</p>
+<p>其中 kt属于kt，users，apps，CPPPB组，app属于apps，kt，CPPPB组</p>
+<p>注意，数据集访问权限和SMB访问的控制权限不等同，smb权限的ACL对kt单用户给全权限即可，kt可以通过smb访问到app用户创建的文件和文件夹</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-8.png" class="" title="acl">
+
+<h4 id="photoprism-配置"><a href="#photoprism-配置" class="headerlink" title="photoprism 配置"></a>photoprism 配置</h4><h5 id="基础配置（存储管理）"><a href="#基础配置（存储管理）" class="headerlink" title="基础配置（存储管理）"></a>基础配置（存储管理）</h5><p>photoprism作为图片管理和自动分类，但并不能在应用中手动指定存放路径，所以不是通过Extra Host Path Volumes修改，而是将对应图片的父文件夹设置为Custom Host Path for Photo Prism Original Storage Volume</p>
+<p>开启Enable Custom Host Path for Photo Prism Original Storage Volume后填入对应图片文件夹路径，比如&#x2F;mnt&#x2F;HC510&#x2F;MAIN&#x2F;IMAGE，注意权限问题，需要可读权限，并且不会影响Syncthing工作</p>
+<h4 id="flame-配置"><a href="#flame-配置" class="headerlink" title="flame 配置"></a>flame 配置</h4><p>安装后安装配置文件配置即可，如果想要整合，需要把TrueNAS的443和80改为其他端口，将80分配给flame</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-9.png" class="" title="flame">
+
+<h3 id="OpenWRT"><a href="#OpenWRT" class="headerlink" title="OpenWRT"></a>OpenWRT</h3><h4 id="虚拟化配置"><a href="#虚拟化配置" class="headerlink" title="虚拟化配置"></a>虚拟化配置</h4><p>首先确保CPU支持虚拟化，如果支持可以通过Truenas开启虚拟机</p>
+<p>构建openwrt的方法，首先需要下载对应固件</p>
+<p><a target="_blank" rel="noopener" href="https://openwrt.org/downloads">OpenWRT download</a><br><a target="_blank" rel="noopener" href="https://firmware-selector.openwrt.org/">firmware-selector</a></p>
+<p>在固件选择页面(firmware-selector)选择Generic x86&#x2F;64型号，下载COMBINED-EFI(EXT4)映像<a target="_blank" rel="noopener" href="https://downloads.openwrt.org/releases/23.05.2/targets/x86/64/openwrt-23.05.2-x86-64-generic-ext4-combined-efi.img.gz">openwrt-23.05.2-x86-64-generic-ext4-combined-efi.img.gz</a></p>
+<p>解压获得对应img文件<strong>openwrt-23.05.2-x86-64-generic-ext4-combined-efi.img</strong>，通过任何方便的方法弄到NAS上去（SMB，U盘，SCP或者直接在NAS上用wget下载），再准备<strong>一个linux的启动镜像</strong>（常规的均可，只是用来调整openwrt的根目录存储逻辑大小），此处采用ubuntu-21.04-live-server-amd64.iso</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-10.png" class="" title="Alt text">
+
+<p>首先先添加Zvol给OpenWRT，在sSSD数据集添加OpenWRT zvol，此处分配了10G</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-12.png" class="" title="Alt text">
+
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-13.png" class="" title="Alt text">
+
+<p>将对应镜像写入zvol盘，在命令行执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dd</span> <span class="keyword">if</span>=~/openwrt-23.05.2-x86-64-generic-ext4-combined-efi.img of=/dev/zvol/sSSD/OpenWRT</span><br></pre></td></tr></table></figure>
+
+<p>在Truenas中添加虚拟机，linux客机操作系统，名称OpenWRT，本地时钟，启动为UEFI，启用显示，虚拟处理器1，核心数2，线程4，CPU为宿主透传（Host Passthrough）模式，内存大小2GiB，zvol选择已有的OpenWRT</p>
+<p>配置外接设备</p>
+<p>双网卡NIC，添加一个CDROM指向ubuntu镜像，优先CDROM启动</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-11.png" class="" title="Alt text">
+
+<h4 id="空间拓展"><a href="#空间拓展" class="headerlink" title="空间拓展"></a>空间拓展</h4><p>默认Openwrt根目录的物理大小和逻辑大小也就100MB左右，需要调整，在OpenWRT中可以调整物理大小，但是逻辑问题不好修复，直接从外部修改就好修改的很多，所以找任意一个linux安装镜像进入维修模式（命令行）</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-14.png" class="" title="ubuntu1">
+
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-15.png" class="" title="ubuntu2">
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">parted <span class="comment">#分区</span></span><br><span class="line"><span class="built_in">print</span> <span class="comment"># 查看硬盘大小 Disk /dev/sda:10.7GB 查看100M左右的ext2根目录分区id，不是grub分区，不是boot分区</span></span><br><span class="line">resizepart 2 <span class="comment">#调整大小为10.7GB</span></span><br><span class="line">quit <span class="comment">#调整后退出即可</span></span><br><span class="line">e2fsck -f /dev/sda2</span><br><span class="line">resize2fs /dev/sda2</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-16.png" class="" title="ubuntu3">
+
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-17.png" class="" title="ubuntu4">
+
+<p>调整后关机即可（poweroff指令），删除CDROM设备，启动设备</p>
+<h4 id="OpenWRT-配置"><a href="#OpenWRT-配置" class="headerlink" title="OpenWRT 配置"></a>OpenWRT 配置</h4><p>启动OpenWRT后按回车即可进入命令行界面</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-18.png" class="" title="openwrt">
+
+<p>初始状态为192.168.1.1的路由，自行调整wan口（192.168.1.90）和lan口（172.16.0.1）就可以从172段访问到OpenWRT的luci web ui了，如果系统从192段也访问得到UI，自行调整防火墙，或者添加防火墙端口映射等</p>
+<p>opkg调整镜像源，此处使用<a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/help/openwrt/">清华源</a>，具体替换方法可以参考镜像源说明</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-19.png" class="" title="tsinghua">
+
+<p>命令参考</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> /etc/opkg/distfeeds.conf /etc/opkg/distfeeds.conf.bak</span><br><span class="line">sed -i <span class="string">&#x27;s_downloads.openwrt.org_mirrors.tuna.tsinghua.edu.cn/openwrt_&#x27;</span> /etc/opkg/distfeeds.conf</span><br><span class="line">opkg update</span><br></pre></td></tr></table></figure>
+
+<p>进入WEB UI进行个人所需设置即可，注意检查存储空间使用，查看是否调整成功</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-20.png" class="" title="openwrt2">
+
+<h2 id="OpenVPN配置"><a href="#OpenVPN配置" class="headerlink" title="OpenVPN配置"></a>OpenVPN配置</h2><p>为了能远程访问到路由中的NAS机器和其他PC（远程桌面）等，需要构建私有内网VPN网络</p>
+<h3 id="OpenVPN服务器配置"><a href="#OpenVPN服务器配置" class="headerlink" title="OpenVPN服务器配置"></a>OpenVPN服务器配置</h3><h4 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h4><p>具体各种需求的配置流程可以在网上查询到，本次以一个阿里云的debian 11服务器作为示例，个人所用命令与对应解释如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">su -- <span class="comment"># 进入超管shell，执行此环境执行命令前请弄清楚含义</span></span><br><span class="line">apt update &amp;&amp; apt upgrade <span class="comment"># 更新镜像和资源</span></span><br><span class="line">apt install openvpn <span class="comment"># 安装openvpn，参考debian的官方文档</span></span><br><span class="line"><span class="built_in">cd</span> /etc/openvpn &amp;&amp; openvpn --genkey secret static.key</span><br><span class="line"></span><br><span class="line"><span class="comment"># S+C端的tls-auth的服务器静态key - /etc/openvpn/static.key</span></span><br><span class="line"></span><br><span class="line">make-cadir /etc/openvpn/easy-rsa <span class="comment"># 创建ca证书分发文件夹</span></span><br><span class="line"><span class="built_in">cd</span> /etc/openvpn/easy-rsa</span><br><span class="line">./easyrsa init-pki <span class="comment"># 初始化</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># init-pki complete; you may now create a CA or requests.</span></span><br><span class="line"><span class="comment"># Your newly created PKI dir is: /etc/openvpn/easy-rsa/pki</span></span><br><span class="line"></span><br><span class="line">./easyrsa build-ca <span class="comment"># 构建ca证书，请牢记密码，后续签发客户端证书需要CA pass phrase</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># CA pass phrase</span></span><br><span class="line"><span class="comment"># Your new CA certificate file for publishing is at:</span></span><br><span class="line"><span class="comment"># /etc/openvpn/easy-rsa/pki/ca.crt</span></span><br><span class="line"><span class="comment"># /etc/openvpn/easy-rsa/pki/private/ca.key</span></span><br><span class="line"></span><br><span class="line">./easyrsa build-server-full server nopass <span class="comment"># 构建服务器证书，nopass为无密码，如需要PEM pass密码请剔除nopass参数，后续启动服务都需要输入此密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># PEM pass</span></span><br><span class="line"><span class="comment"># /etc/openvpn/easy-rsa/pki/issued/server.crt - cert</span></span><br><span class="line"><span class="comment"># /etc/openvpn/easy-rsa/pki/private/server.key - key</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 生成 DIFFIE-HELLMAN 参数，密钥交换用dh文件</span></span><br><span class="line">./easyrsa gen-dh</span><br><span class="line"></span><br><span class="line"><span class="comment"># /etc/openvpn/easy-rsa/pki/dh.pem</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">mv</span> /etc/openvpn/static.key /etc/openvpn/server/ta.key  <span class="comment"># 移动并重命名文件，方便服务器端使用</span></span><br></pre></td></tr></table></figure>
+
+<p>然后填写服务器配置文件&#x2F;etc&#x2F;openvpn&#x2F;server.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">port 1194</span><br><span class="line">proto udp</span><br><span class="line">dev tun</span><br><span class="line"></span><br><span class="line">ca      /etc/openvpn/easy-rsa/pki/ca.crt</span><br><span class="line">cert    /etc/openvpn/easy-rsa/pki/issued/server.crt</span><br><span class="line">key     /etc/openvpn/easy-rsa/pki/private/server.key  <span class="comment"># keep secret</span></span><br><span class="line">dh      /etc/openvpn/easy-rsa/pki/dh.pem</span><br><span class="line"></span><br><span class="line">topology subnet</span><br><span class="line"></span><br><span class="line">client-config-dir /etc/openvpn/ccd <span class="comment"># 告知服务器路由子网段</span></span><br><span class="line">ifconfig-pool-persist /etc/openvpn/ipp.txt</span><br><span class="line"></span><br><span class="line">server 10.9.8.0 255.255.255.0  <span class="comment"># internal tun0 connection IP</span></span><br><span class="line"></span><br><span class="line">push <span class="string">&quot;route 172.16.0.0 255.255.255.0&quot;</span> <span class="comment"># 推送给客户端路由</span></span><br><span class="line">route 172.16.0.0 255.255.255.0 <span class="comment"># 添加本地路由</span></span><br><span class="line"></span><br><span class="line">user nobody</span><br><span class="line">group nogroup</span><br><span class="line"></span><br><span class="line">keepalive 10 120</span><br><span class="line"></span><br><span class="line">tls-auth /etc/openvpn/server/ta.key 0</span><br><span class="line">auth-nocache</span><br><span class="line"></span><br><span class="line">cipher AES-256-CBC</span><br><span class="line">data-ciphers AES-256-CBC</span><br><span class="line"></span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line"></span><br><span class="line">status /var/log/openvpn/openvpn-status.log</span><br><span class="line"></span><br><span class="line">verb 3  <span class="comment"># verbose mode</span></span><br><span class="line"></span><br><span class="line">client-to-client</span><br><span class="line">explicit-exit-notify 1</span><br></pre></td></tr></table></figure>
+
+<p>在’&#x2F;etc&#x2F;openvpn&#x2F;ccd&#x2F;你分发给openwrt的证书名’文件中写入路由信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iroute 172.16.0.0 255.255.255.0</span><br></pre></td></tr></table></figure>
+
+<p>配置好了以后重启服务即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart openvpn <span class="comment"># 将所有openvpn的服务都重启</span></span><br><span class="line">systemctl status openvpn@server.service <span class="comment"># 查看系统服务状态</span></span><br><span class="line"><span class="comment"># 查看到状态active (running)即可</span></span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-23.png" class="" title="openvpn">
+
+<h3 id="OpenVPN客户端配置"><a href="#OpenVPN客户端配置" class="headerlink" title="OpenVPN客户端配置"></a>OpenVPN客户端配置</h3><p>为了方便生成而避免每次手动合成，个人写的脚本和模板如下</p>
+<p>模板:example.ovpn，请将其中的123.456.789.012改为自己的公网服务器IP地址，1194是默认端口，放在~&#x2F;目录即可，即&#x2F;root&#x2F;example.ovpn</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">client</span><br><span class="line">dev tun</span><br><span class="line">proto udp</span><br><span class="line">remote 123.456.789.012 1194</span><br><span class="line">resolv-retry infinite</span><br><span class="line">nobind</span><br><span class="line">persist-key</span><br><span class="line">persist-tun</span><br><span class="line">remote-cert-tls server</span><br><span class="line">auth-nocache</span><br><span class="line">cipher AES-256-CBC</span><br><span class="line">data-ciphers AES-256-CBC</span><br><span class="line">mute-replay-warnings</span><br><span class="line">verb 3</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 给客户端创建文件，需要example.ovpn文件</span></span><br><span class="line"><span class="comment"># ./easyrsa build-client-full clientname nopass # 无密码验证</span></span><br><span class="line"><span class="comment"># ./easyrsa build-client-full clientname # 有PEM密码验证</span></span><br><span class="line"><span class="comment"># =&gt;</span></span><br><span class="line"><span class="comment"># /etc/openvpn/easy-rsa/pki/issued/clientname.crt</span></span><br><span class="line"><span class="comment"># /etc/openvpn/easy-rsa/pki/private/clientname.key</span></span><br><span class="line"></span><br><span class="line">genclientovpn() <span class="comment"># 生成并合并，生成ovpn文件，root用户在/etc/openvpn/easy-rsa/目录执行</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="built_in">mkdir</span> -p <span class="variable">$&#123;1&#125;</span> 2&gt;/dev/null</span><br><span class="line">./easyrsa build-client-full <span class="variable">$&#123;2&#125;</span> nopass <span class="comment"># 无密码验证，需要输入RA证书的密码</span></span><br><span class="line"><span class="built_in">mkdir</span> <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span> 2&gt;/dev/null</span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> ~/example.ovpn &gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;tls-auth&gt;&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">cat</span> /etc/openvpn/server/ta.key &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;/tls-auth&gt;&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;key-direction 1&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;ca&gt;&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">cat</span> /etc/openvpn/easy-rsa/pki/ca.crt &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;/ca&gt;&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;cert&gt;&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">cat</span> /etc/openvpn/easy-rsa/pki/issued/<span class="variable">$&#123;2&#125;</span>.crt &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;/cert&gt;&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;key&gt;&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">cat</span> /etc/openvpn/easy-rsa/pki/private/<span class="variable">$&#123;2&#125;</span>.key &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;/key&gt;&#x27;</span> &gt;&gt; <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn</span><br><span class="line"></span><br><span class="line"><span class="built_in">chmod</span> 755 <span class="variable">$&#123;1&#125;</span>/<span class="variable">$&#123;2&#125;</span>/<span class="variable">$&#123;2&#125;</span>.ovpn <span class="comment"># 方便SCP下载 不安全，下载后确保删除</span></span><br><span class="line">&#125;</span><br><span class="line">genclientovpn savepath clientname <span class="comment">#执行此命令即可在savepath中保存clientname的ovpn文件，确保位置能被scp用户读取</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 从服务器下载这些文件到客户端后删除此文件夹对应的ovpn文件</span></span><br><span class="line"><span class="built_in">rm</span> -rf savepath    <span class="comment"># 一定需要执行</span></span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-21.png" class="" title="openvpn">
+
+<p>下载客户端OpenVPN客户端后导入，理论来说即可正常使用</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-22.png" class="" title="openvpn">
+
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-25.png" class="" title="openvpn">
+
+<h3 id="OpenVPN-OpenWRT-配置"><a href="#OpenVPN-OpenWRT-配置" class="headerlink" title="OpenVPN &amp; OpenWRT 配置"></a>OpenVPN &amp; OpenWRT 配置</h3><p>在openwrt上安装openvpn-ssl和对应的luci界面，刷新即可查看到VPN选项卡</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-26.png" class="" title="openwrt">
+
+<p>直接手动选择ovpn配置文件上传，勾上启用后启动，等待10s左右应该就可以看到实例运行</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-27.png" class="" title="openwrt">
+
+<p>相应的会在网络-接口中看到tun设备</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-28.png" class="" title="tun">
+
+<p>生成一个属于openwrt的配置文件</p>
+<p>将此设备添加到接口，方便后续防火墙和路由转发设置，设置静态地址即可，服务端开启了设备ip保存</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-29.png" class="" title="openwrt">
+
+<p>相应，也可以在命令行或web端测试OpenVPN端ping</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-30.png" class="" title="openwrt">
+
+<p>远端设备开启OpenVPN前后访问内网OpenWRT的状态如下</p>
+<img src="/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/image-24.png" class="" title="openvpn">
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>虽然思路挺简单，但是实际配置过程并不是怎么愉快，许许多多方面都有问题，最大的方面是计算机网络，ChatGPT的建议也大多都有误，不是配置版本对不上，就是拿通解当特解，最后被逼无奈在各个地方tcpdump-ping-保存-下载-分析-调整配置，一遍又一遍重复这个操作，不断调整，碰壁不少才弄成的，有时候自己知道的太少，觉得计算机网络不像科学，更像是个玄学。XD</p>
+<p>如有其他需求如ADblock，plex等可以自行添加调整</p>
+<h2 id="参考网站链接"><a href="#参考网站链接" class="headerlink" title="参考网站链接"></a>参考网站链接</h2><p>无前后顺序</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.h3c.com/cn/d_202209/1681854_30005_0.htm">02-静态路由Debug-新华三集团-H3C</a></li>
+<li><a target="_blank" rel="noopener" href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/securing_networks/configuring-nat-using-nftables_getting-started-with-nftables">10.4. 使用 nftables 配置 NAT Red Hat Enterprise Linux 8 | Red Hat Customer Portal</a></li>
+<li><a target="_blank" rel="noopener" href="https://community.openvpn.net/openvpn/ticket/1051">#1051 (Openvpn interactive service issue) – OpenVPN Community</a></li>
+<li><a target="_blank" rel="noopener" href="https://askubuntu.com/questions/765951/starting-openvpn-error-please-enter-password-with-the-systemd-tty-ask-password">“15.10 - Starting openvpn error: “”Please enter password with the systemd-tty-ask-password-agent”” - Ask Ubuntu”</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/truenas/comments/148z36g/22123_openvpn_client_removed_alternatives/">22.12.3 - OpenVPN 客户端已删除 - 替代品？： r&#x2F;truenas</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/systemd/systemd/issues/9507">“238 - as root, when&#x2F;why is systemd-tty-ask-password-agent spawned? · Issue #9507 · systemd&#x2F;systemd”</a></li>
+<li><a target="_blank" rel="noopener" href="https://access.redhat.com/documentation/zh-cn/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-port-forwarding-using-nftables_getting-started-with-nftables">58.8. 使用 nftables 配置端口转发 Red Hat Enterprise Linux 8 | Red Hat Customer Portal</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.openvpn.net/viewtopic.php?t=20860">all key in .ovpn - OpenVPN Support Forum</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.truenas.com/community/threads/applications-are-not-running.101489/">Applications are not running | TrueNAS Community</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.truenas.com/community/threads/apps-not-working-after-update.109371/">Apps not working after update | TrueNAS Community</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.asrockrack.com/general/productdetail.asp?Model=C2750D4I#Specifications">ASRock Rack &gt; C2750D4I</a></li>
+<li><a target="_blank" rel="noopener" href="https://security.stackexchange.com/questions/192979/client-certificate-common-name-subject-alternative-name">authentication - Client certificate common name? Subject alternative name? - Information Security Stack Exchange</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/">Business VPN For Secure Networking | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/cngkqy/article/details/128970968">CentOS7安装配置OpenVNP连接远端服务器_please enter password with the systemd-tty-ask-pas-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://luanlengli.github.io/2019/11/25/CentOS7%E9%83%A8%E7%BD%B2OpenVPN%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E4%BA%92%E9%80%9A.html">CentOS7部署OpenVPN实现内网互通 | luanlengli’s Blog</a></li>
+<li><a target="_blank" rel="noopener" href="https://linux.xiaosiseo.com/post/30130.html">CentOS查看OpenVPN命令详解 - 小四LINUX</a></li>
+<li><a target="_blank" rel="noopener" href="https://askubuntu.com/questions/967885/check-if-openvpn-is-running">Check if OpenVPN is running - Ask Ubuntu</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/community-downloads/">Community Downloads - Open Source VPN | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://community.openvpn.net/openvpn/wiki/RoutedLans">community.openvpn.net</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.truenas.com/docs/core/coretutorials/communityguides/openvpn/">Configuring a 3rd Party VPN service on TrueNAS |</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.onitroad.com/jc/linux/faq/debian-11-set-up-openvpn-server-in-5-minutes.html">Debian 11 在 5 分钟内设置 OpenVPN 服务器-之路教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://db.debian.org/forward.html">Debian Project – Email Forwarding</a></li>
+<li><a target="_blank" rel="noopener" href="https://packages.debian.org/zh-tw/sid/x11-common">Debian – 在 sid 中的 x11-common 套件詳細資訊</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1376002">Debian 系统如何配置 iptables-腾讯云开发者社区-腾讯云</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ewbang.com/community/article/details/997878209.html">Debian系统安装OpenVPN-易微帮</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.openvpn.net/viewtopic.php?t=9055">“Difference “”route”” &amp; “”push route”” commands - OpenVPN Support Forum”</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.truenas.com/download-truenas-scale/">Download TrueNAS SCALE - Data Storage Software</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/community-resources/hardening-openvpn-security/">Hardening OpenVPN Security | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://forum.openwrt.org/t/how-can-i-switch-luci-theme-from-cli-ssh/150711/20?page=2">How can I switch LUCI theme from CLI (ssh)? - Installing and Using OpenWrt - OpenWrt Forum</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.pauby.com/post/openvpn-client-single-file-configuration-for-glinet/">How To Create A Single OpenVPN Client Configuration For The GL.iNet Router - pauby.com</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/community-resources/how-to/">How To Guide: Set Up &amp; Configure OpenVPN Client&#x2F;server VPN | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://phoenixnap.com/kb/openvpn-docker">How to Install OpenVPN on Docker {7 Steps} | phoenixNAP KB</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/immortalwrt-collections/luci-app-serverchan">immortalwrt-collections&#x2F;luci-app-serverchan: serverchan running on openwrt</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.debian.org/iptables">iptables - Debian Wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://pan-xiao.gitbook.io/debian/fang-huo-qiang-yu-an-quan/iptables">iptables - Debian 快速入门攻略</a></li>
+<li><a target="_blank" rel="noopener" href="https://serverfault.com/questions/532569/how-to-do-port-forwarding-redirecting-on-debian">iptables - How to do port forwarding&#x2F;redirecting on Debian? - Server Fault</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-4031598-1-1.html">“lan物理设置中的桥接接口到底怎么用-软路由,x86系统,openwrt(x86),Router OS 等-恩山无线论坛”</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/vpn-server-resources/connecting-to-access-server-with-linux/">Linux Connection Guide For OpenVPN Access Server | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.kuazhi.com/post/435856.html">linux debian 运维 服务器 openVN安装搭建步骤，实现内网穿透 - 夸智网</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/70922539/how-do-i-automatically-provide-arguments-in-interactive-terminal">linux - How do I automatically provide arguments in interactive terminal? - Stack Overflow</a></li>
+<li><a target="_blank" rel="noopener" href="https://linuxconfig.org/how-to-turn-on-off-ip-forwarding-in-linux">Linux IP 转发 - 如何使用 net.ipv4.ip_forward 禁用&#x2F;启用</a></li>
+<li><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/516469/openvpn-doesnt-seem-to-run-active-exited-code-exited-status-0-success">“linux - OpenVPN doesn’t seem to run: active (exited), code&#x3D;exited, status&#x3D;0&#x2F;SUCCESS - Unix &amp; Linux Stack Exchange”</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/11240184/pass-private-key-password-to-openvpn-command-directly-in-ubuntu-10-10">linux - Pass private key password to openvpn command directly in Ubuntu 10.10 - Stack Overflow</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.debian.org/nftables">nftables - Debian Wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/blog/openvpn-3-linux-and-auth-user-pass/">OpenVPN 3 Linux And –auth-user-pass | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://community.openvpn.net/openvpn/wiki/OpenVPN3Linux?_gl=1*7k7q04*_ga*MTAyNTA4MTk4MC4xNzA0NzI4NzY5*_ga_SPGM8Y8Y79*MTcwNDczODI5NC40LjEuMTcwNDc0MDUxMS4wLjAuMA..">OpenVPN3Linux – OpenVPN Community</a></li>
+<li><a target="_blank" rel="noopener" href="https://serverfault.com/questions/161050/openvpn-advanced-setup-masquerade-or-snat-dnat-or-even-proxy">openvpn advanced setup - masquerade or snat&#x2F;dnat or even proxy - Server Fault</a></li>
+<li><a target="_blank" rel="noopener" href="https://backreference.org/2009/11/15/openvpn-and-iroute/">OpenVPN and iroute « \1</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_49027804/article/details/130991215">【openVPN】Centos7 部署openVPN多客户端 已连通_centos7 openv-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/openvpn-client-for-linux/">OpenVPN Client For Linux | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.openvpn.net/viewtopic.php?t=30336">“OpenVPN client keeps asking for certificate&#x2F;token password despite “”askpass “” option in config file - OpenVPN Support Forum”</a></li>
+<li><a target="_blank" rel="noopener" href="https://community.openvpn.net/openvpn/wiki?_ga=2.244000263.326976489.1648437183-1750138733.1646446773&_gl=1*vkgdzr*_ga*MTAyNTA4MTk4MC4xNzA0NzI4NzY5*_ga_SPGM8Y8Y79*MTcwNDcyODc2OC4xLjEuMTcwNDcyOTEwNC4wLjAuMA..">OpenVPN Community</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.openvpn.net/viewtopic.php?t=43289">“OpenVPN configuration works through command line with administrative access, but not through GUI - OpenVPN Support Forum”</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/client/client-connect-vpn-for-windows/">OpenVPN Connect - Client Software For Windows | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/client/">OpenVPN Connect - VPN For Your Operating System | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://wiki.debian.org/OpenVPN">OpenVPN - Debian Wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/izombielandgit/OpenVPN-HOWTO/blob/master/2.%20%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E.md">OpenVPN-HOWTO&#x2F;2. 配置文件说明.md at master · izombielandgit&#x2F;OpenVPN-HOWTO</a></li>
+<li><a target="_blank" rel="noopener" href="https://community.openvpn.net/openvpn/wiki/OpenVPNInteractiveService">OpenVPNInteractiveService – OpenVPN Community</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/ask/sof/117116116">OpenVPN on OpenWRT:通过VPN隧道路由特定的子网-腾讯云开发者社区-腾讯云</a></li>
+<li><a target="_blank" rel="noopener" href="https://superuser.com/questions/1432674/openvpnserviceinteractive-is-not-started-tasks-requiring-administrative-access">openvpn - OpenVPNServiceInteractive is not started. Tasks requiring administrative access may not work - Super User</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/OpenVPN/openvpn/blob/master/sample/sample-config-files/client.conf">openvpn&#x2F;sample&#x2F;sample-config-files&#x2F;client.conf at master · OpenVPN&#x2F;openvpn</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/OpenVPN/openvpn/blob/master/sample/sample-config-files/README">openvpn&#x2F;sample&#x2F;sample-config-files&#x2F;README at master · OpenVPN&#x2F;openvpn</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.itca.cc/VPN%E6%90%AD%E5%BB%BA/openvpn-2.html">OpenVPN Server 端及 Client 端配置文件详细说明 - Late Winter</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2348106">OpenVPN server端配置文件详细说明-腾讯云开发者社区-腾讯云</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/product-select/">OpenVPN SSO</a></li>
+<li><a target="_blank" rel="noopener" href="https://status.openvpn.com/">OpenVPN Status</a></li>
+<li><a target="_blank" rel="noopener" href="https://ubuntuforums.org/showthread.php?t=2367795">OpenVPN stuck at systemd-tty-ask-password-agent</a></li>
+<li><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/444855/systemd-ask-password-prompt-not-displayed-for-vpn">openvpn - systemd-ask-password prompt not displayed for vpn - Unix &amp; Linux Stack Exchange</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/ask/sof/116423357">OpenVPN tun不转发流量-腾讯云开发者社区-腾讯云</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cj1698/p/15927664.html">Open Ｖｐｎ使用账号密码认证方式登陆 - 局域网外 - 博客园</a></li>
+<li><a target="_blank" rel="noopener" href="https://coctec.com/docs/service/show-post-31532.html">OPENVPN如何查看客戶端已連接的IP | 開源互助社區</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.joshua317.com/article/82">Openvpn 客户端路由配置 - joshua317的博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/joshua317/article/details/120245443">Openvpn 客户端路由配置_route-nopull-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://wanglu.info/2015/11/1010.html">OpenVPN客户端配置 - 戊辰人博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://gist.github.com/athurg/2a369d309b1fa321adef9fb60af60efd">OpenVPN服务器配置范例</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3467e99b3b78">Openvpn构建线上局域网 - 简书</a></li>
+<li><a target="_blank" rel="noopener" href="https://opswill.com/articles/openvpn-add-local-routing-table.html">openvpn添加本地路由表 - 阅心笔记</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.lmtea.net/archives/openvpn%E6%B7%BB%E5%8A%A0%E8%B7%AF%E7%94%B1%E8%A1%A8%E6%95%99%E7%A8%8B">OpenVpn添加路由表教程 | lemontea</a></li>
+<li><a target="_blank" rel="noopener" href="https://6xyun.cn/article/97">OpenVPN 自定义路由配置 | 6x’s notepad</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/linuxcgi/1965234">openvpn路由模式实现LAN-TO-LAN_51CTO博客_openwrt设置lan上网</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.rayfalling.com/2020/01/openvpn-%E8%B7%AF%E7%94%B1%E8%AE%BE%E7%BD%AE.html">OpenVPN 路由设置 – 凤曦的小窝</a></li>
+<li><a target="_blank" rel="noopener" href="https://limbo.moe/posts/2018/openvpn-routes">OpenVPN 路由详解 | Hacking Limbo</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.joylau.cn/2020/05/28/OpenVPN-Config/">OpenVPN 配置文件说明 - JoyLau’s Blog</a></li>
+<li><a href="https://firmware-selector.openwrt.org/?version=23.05.2&target=x86/64&id=generic">OpenWrt Firmware Selector</a></li>
+<li><a target="_blank" rel="noopener" href="https://romantic-hoover-f991f1.netlify.app/cookbook/network/openwrt+openvpn%E7%A9%BF%E9%80%8F%E5%8F%8A%E5%85%AC%E5%8F%B8%E8%99%9A%E6%8B%9F%E7%A7%81%E6%9C%89%E7%BD%91%E5%85%B3%E6%90%AD%E5%BB%BA/">OpenWrt+OpenVPN穿透及公司虚拟私有网关搭建 - 未来全栈 | Ryane Liu(刘雨飏)</a></li>
+<li><a target="_blank" rel="noopener" href="https://hak5.com.cn/post/1563.html">OpenWRT OpenVPN配置远程访问所有家里局域网服务 | HAK5安全</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.dreamtobe.cn/openwrt_openvpn/">OpenWRT OpenVPN配置远程访问所有家里局域网服务 - Jacks Blog</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.vnet.one/static/pdf/openwrt.pdf">openwrt.pdf</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/luci.secure">[OpenWrt Wiki] Accessing LuCI web interface securely</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/base-system/basic">[OpenWrt Wiki] Basic configuration</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/dashboard">[OpenWrt Wiki] Dashboard</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/downloads">[OpenWrt Wiki] Downloads</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-quick-start/factory_installation">[OpenWrt Wiki] Factory install: First-time installation on a device</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/getting_rid_of_luci_https_certificate_warnings">[OpenWrt Wiki] How to get rid of LuCI HTTPS certificate warnings</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-quick-start/walkthrough_login">[OpenWrt Wiki] Log into your router running OpenWrt</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/luci_app_statistics">[OpenWrt Wiki] luci-app-statistics</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/luci.essentials">[OpenWrt Wiki] LuCI essentials</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/luci.on.lighttpd">[OpenWrt Wiki] LuCI on lighttpd</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/luci.themes">[OpenWrt Wiki] LuCI themes</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/zh/docs/guide-user/luci/luci.themes">[OpenWrt Wiki] LuCI 主题</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/zh/docs/guide-user/luci/start">[OpenWrt Wiki] LuCI 网页界面</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/statistics.chart.public">[OpenWrt Wiki] Make luci-app-statistics graphs public</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/client-luci?s%5B%5D=openvpn">[OpenWrt Wiki] OpenVPN client using LuCI</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/zh/docs/guide-user/services/vpn/openvpn/client">[OpenWrt Wiki] OpenVPN 客户端</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-quick-start/starterfaq">[OpenWrt Wiki] OpenWrt Starter FAQ</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-quick-start/start">[OpenWrt Wiki] Quick start guide for OpenWrt installation</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-quick-start/sshadministration">[OpenWrt Wiki] SSH access for newcomers</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/static_ip">[OpenWrt Wiki] Static IP</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/zh/docs/guide-user/base-system/uci">[OpenWrt Wiki] UCI系统</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-quick-start/ssh_connect_to_the_internet_and_install_luci">[OpenWrt Wiki] Use SSH to connect to the internet and install LuCI web interface</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/luci/webinterface.overview">[OpenWrt Wiki] Web interface overview</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/">[OpenWrt Wiki] Welcome to the OpenWrt Project</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/zh/downloads">[OpenWrt Wiki] 下载</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/zh/docs/guide-user/luci/dashboard">[OpenWrt Wiki] 仪表盘</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/zh/docs/guide-user/services/vpn/openvpn/client-luci">[OpenWrt Wiki] 使用 LuCI网页界面配置 OpenVPN 客户端</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_28588941/article/details/108434111">Openwrt下ipk包的安装、卸载与更新_openwrt 安装本地ipk-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/s/openwrt%20%E5%8D%B8%E8%BD%BD%E8%BD%AF%E4%BB%B6%E5%8C%85">openwrt 卸载软件包-掘金</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/609066343">OpenWRT好用的插件 - 知乎</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.v2ex.com/t/165319">openWrt 如何重置防火墙？ - V2EX</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/s/openwrt%E5%B8%B8%E7%94%A8%E8%BD%AF%E4%BB%B6%E5%8C%85">openwrt常用软件包-掘金</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34404284/article/details/131524836">Openwrt 开启openvpn服务访问内网_openwrt openvin-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/pyt1234567890/article/details/107323540">“openwrt添加luci选项，开启luCI&amp;增加主题_openwrt主题安装了,无主题选项-CSDN博客”</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-quick-start/checks_and_troubleshooting">[OpenWrt 维基]Internet 连接和故障排除</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/services/vpn/openvpn/start">[OpenWrt 维基]OpenVPN的</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/network/openwrt_as_routerdevice">[OpenWrt 维基]OpenWrt 作为路由器设备</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/security/openwrt_security#setting_the_root_password">[OpenWrt 维基]OpenWrt 安全加固</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/services/vpn/start">[OpenWrt 维基]VPN（虚拟专用网络）</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-quick-start/basic_wifi">[OpenWrt 维基]在OpenWrt上启用Wi-Fi接入点</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/start">[OpenWrt 维基]用户指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://openwrt.org/docs/guide-user/services/start">[OpenWrt 维基]附加服务</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/DevGOOD/article/details/133607492">OpenWRT编程：统计在线客户端数量_openwrt 客户列表-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://itindex.net/detail/50063-openwrt-%E8%B7%AF%E7%94%B1-%E7%B3%BB%E7%BB%9F">OpenWRT 路由系统上抓包 | IT瘾</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/298391362">OpenWRT静态路由为什么会失效？ - 知乎</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/product-comparison/">Product Comparison | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://lists.debian.org/debian-chinese-gb/2009/03/msg00160.html">Re: Debian作PPTP VPN服务器不能路由转发的问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/community-resources/reference-manual-for-openvpn-2-5/">Reference Manual For OpenVPN 2.5 | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/community-resources/">Resources For OpenVPN OpenSource Community | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/91071/openvpn-push-a-route-to-client-with-a-different-gateway">routing - OpenVPN: Push a route to client with a different gateway - Unix &amp; Linux Stack Exchange</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.openvpn.net/viewtopic.php?t=11342">Saving Username&#x2F;Password - OpenVPN Support Forum</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.truenas.com/docs/scale/23.10/gettingstarted/scalereleasenotes/">SCALE 23.10 Release Notes |</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.openvpn.net/viewtopic.php?t=9758">[SOLVED] howto know status of openvpn client ? - OpenVPN Support Forum</a></li>
+<li><a target="_blank" rel="noopener" href="https://forums.openvpn.net/viewtopic.php?t=27419">[Solved] Please enter password with the systemd-tty-ask-password-agent tool! - OpenVPN Support Forum</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1928219">SSL VPN搭建与使用(OpenVpn)-腾讯云开发者社区-腾讯云</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.wenjiangs.com/doc/systemd-systemd-tty-ask-password-agent">systemd-tty-ask-password-agent 中文手册 - systemd 中文手册 - 开发文档 - 文江博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.truenas.com/docs/">truenas.com&#x2F;docs&#x2F;</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.toutiao.com/article/7148947189480604160/">TrueNAS SCALE下基于KVM虚拟机的openwrt软路由安装教程-今日头条</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/ramondq/article/details/130937842">TrueNAS SCALE 虚拟机 OpenWrt 端口转发问题_treenas 阿里云 转发-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.truenas.com/">TrueNAS - Welcome to the Open Source Storage Era</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.360kuai.com/pc/9ecc24f4d91e42bf6?cota=3&kuai_so=1&tj_url=so_vip&sign=360_e39369d1">TrueNAS安装Openwrt软路由虚拟机并设置ipv6</a></li>
+<li><a target="_blank" rel="noopener" href="https://post.smzdm.com/p/apvr4k90/">TrueNAS 篇四：虚拟化 &amp;&amp; openwrt &gt; AlliNBoom_NAS存储_什么值得买</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/487641280">TrueNAS虚拟机安装Openwrt 超详细教程 - 知乎</a></li>
+<li><a target="_blank" rel="noopener" href="https://superuser.com/questions/1725117/password-entry-required-for-prompts-keep-appearing-in-terminal-after-installing">ubuntu - Password entry required for prompts keep appearing in terminal after installing openvpn - Super User</a></li>
+<li><a target="_blank" rel="noopener" href="https://qa.1r1g.com/unix/ask/31139881/">vpn 不显示 systemd-ask-password 提示 | 那些遇到过的问题</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/vpn-server-resources/which-version-of-openvpn-to-use/">Which Version Of OpenVPN To Use | OpenVPN</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/rockage/article/details/127190263">一看就懂的保姆级教程：open vn设置 （亲测通过）_openvn-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ruijie.com.cn/jszl/89923/">中继模式和桥接模式的区别</a></li>
+<li><a target="_blank" rel="noopener" href="https://openvpn.net/faq/what-is-and-how-do-i-enable-ip-forwarding-on-linux/">什么是以及如何在 Linux 上启用 IP 转发？ |OpenVPN的</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.bling.moe/post/3/">使用 Debian 作为路由器 :: 星野玲的博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.camelgeek.net/108.html">使用 OpenVPN 实现不同网段设备之间的互相访问，服务端搭在树莓派上 - 驼峰Geek</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.xiaoxiaoguo.cn/network/openvpn.html">使用openvpn连通多个机房内网 | 小小郭的博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/976279">全网最完善的openVPN搭建部署指南-阿里云开发者社区</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.linuxfly.org/post/86/">[原]深入OpenVPN的配置 - linuxの飘扬 - Power by www.linuxfly.org</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/cainiao2013/article/details/117109744">启用openvpn后网络问题-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://linuxhint.com/enable_ip_forwarding_ipv4_debian_linux/">在 Debian GNU&#x2F;Linux 中启用 IPv4 的 IP 转发</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.jqian.net/post/openwrt-openvpn.html">在openwrt上部署openvpn客户端 | blog | 逍遥郡</a></li>
+<li><a target="_blank" rel="noopener" href="https://moguol.github.io/2015/08/30/openvpn/index.html">墨 痕</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/587068225">如何使用Debian&#x2F;Ubuntu等Linux做软路由（物理机版本，非虚拟机容器版） - 知乎</a></li>
+<li><a target="_blank" rel="noopener" href="https://clockworkbird9.wordpress.com/2010/10/21/%E5%A6%82%E4%BD%95%E5%8D%95%E7%8B%AC%E6%B8%85%E7%90%86%EF%BC%8C%E7%BC%96%E8%AF%91openwrt%E8%BD%AF%E4%BB%B6%E5%8C%85/">如何单独清理，编译OpenWRT软件包 | Clockwork Bird</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.gingerdoc.com/tutorials/how-to-set-up-an-openvpn-server-on-debian-10">如何在 Debian 10 上设置 OpenVPN 服务器 - Gingerdoc 姜知笔记</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/654448500">如何在 Debian 11 上设置 OpenVPN 服务器 - 知乎</a></li>
+<li><a target="_blank" rel="noopener" href="http://129.226.226.195/post/28813.html">如何查看已连接的用户以打开VPN服务器？_编程黑洞网</a></li>
+<li><a target="_blank" rel="noopener" href="https://panfake.com/2023/08/how-to-reset-openwrt-firewall-config/">如何重置OpenWrt防火墙配置 - panFake</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/fw876/helloworld/issues/843">最新openwrt已默认使用firewall4 nftables了，有计划更新兼容版本吗？ · Issue #843 · fw876&#x2F;helloworld</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/C_Creator/article/details/105653393">本地网络调试——查看路由表_本地调试会进过路由器吗-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://help.yeastar.com/zh-cn/s-series/topic/openvpn-build-up-the-openvpn-server.html">构建 OpenVPN 服务器</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_3105610/1733791">查看已连接的openvpn客户端方法_51CTO博客_pptp 客户端</a></li>
+<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E6%A1%A5%E6%8E%A5/3574841">桥接_百度百科</a></li>
+<li><a target="_blank" rel="noopener" href="https://refactoringguru.cn/design-patterns/bridge">桥接设计模式</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-4106207-1-1.html">求助，OPENWRT设置静态路由不起作用。谢谢。-OPENWRT专版-恩山无线论坛</a></li>
+<li><a target="_blank" rel="noopener" href="https://nga.178.com/read.php?tid=35535713&rand=96">[求助] 求助openwrt做旁路由，如何设置通过 openvpn 在外网访问到家里的内网？ 178</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ilanni.com/?p=9877">烂泥：openvpn tun模式下客户端与内网机器通信-烂泥行天下</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ilanni.com/?p=9847">烂泥：openvpn配置文件详解-烂泥行天下</a></li>
+<li><a target="_blank" rel="noopener" href="https://help.yeastar.com/zh-cn/s-series/topic/openvpn-generate-certificates-and-keys.html">生成 OpenVPN 证书 &amp; 密钥</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/ask/sof/116302767">端口转发openvpn服务器到客户端-腾讯云开发者社区-腾讯云</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.debian.org/doc/manuals/debian-faq/customizing.zh-cn.html">第 11 章 定制您的 Debian GNU&#x2F;Linux 系统</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41453285/article/details/102625790">简略讲解OpenWrt的路由配置(单播路由&#x2F;静态路由、策略路由、IGMP组播路由)_openwrt 路由类型-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-576146-1-1.html">请求解决openv-<del>p-</del>n组网问题-OPENWRT专版-恩山无线论坛</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.right.com.cn/forum/thread-4041013-1-1.html">请问openwrt如何看连接设备名称？-OPENWRT专版-恩山无线论坛</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/cxt-janson/p/11232003.html">【转】OpenWrt 防火墙&#x2F;etc&#x2F;config&#x2F;firewall介绍 - 陈晓涛 - 博客园</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/1303828">【运维知识进阶篇】手把手教你搭建OpenVPN（保姆级教程）（一）-阿里云开发者社区</a></li>
+<li><a target="_blank" rel="noopener" href="https://iyzm.net/openwrt/545.html">进阶教程之 OpenWrt 常用运维操作指南 - 爱一枝梅</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_17351077/article/details/77942897">通过openwrt查看连接手机设备的IP，MAC地址，设备名_openwrt 怎么看lan1链接的设备-CSDN博客</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.truenas.com/docs/core/coretutorials/services/configuringopenvpn/">配置 OpenVPN |</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/606470951">配置openVPN使用用户名密码认证 - 知乎</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36323157/article/details/125395136">静态路由Route不生效的解决方法_静态路由不生效-CSDN博客</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/blog/">首页</a></li>
+        
+          <li><a href="/blog/about/">关于</a></li>
+        
+          <li><a href="/blog/archives/">归档</a></li>
+        
+          <li><a target="_blank" rel="noopener" href="https://github.com/KevinTong9">项目</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E8%A6%81"><span class="toc-number">1.</span> <span class="toc-text">提要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E9%80%89%E9%85%8D%EF%BC%8C%E7%BB%84%E8%A3%85%EF%BC%8C%E6%B5%8B%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">硬件选配，组装，测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TrueNas"><span class="toc-number">3.</span> <span class="toc-text">TrueNas</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="toc-number">3.1.</span> <span class="toc-text">基础配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">3.1.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE-1"><span class="toc-number">3.1.2.</span> <span class="toc-text">基础配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE"><span class="toc-number">3.2.</span> <span class="toc-text">网络配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B5%E5%88%97%E9%85%8D%E7%BD%AE"><span class="toc-number">3.3.</span> <span class="toc-text">阵列配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Kubernetes%E9%85%8D%E7%BD%AE"><span class="toc-number">3.4.</span> <span class="toc-text">Kubernetes配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#syncthing"><span class="toc-number">3.4.1.</span> <span class="toc-text">syncthing</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%EF%BC%88%E4%BD%BF%E7%94%A8%E9%80%BB%E8%BE%91%EF%BC%89"><span class="toc-number">3.4.1.1.</span> <span class="toc-text">基础配置（使用逻辑）</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"><span class="toc-number">3.4.1.1.1.</span> <span class="toc-text">服务器端</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">3.4.1.1.2.</span> <span class="toc-text">客户端</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E6%9D%83%E9%99%90%E9%85%8D%E7%BD%AE%EF%BC%88Linux-POSIX-ACL%EF%BC%89"><span class="toc-number">3.4.1.2.</span> <span class="toc-text">数据集权限配置（Linux POSIX ACL）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#photoprism-%E9%85%8D%E7%BD%AE"><span class="toc-number">3.4.2.</span> <span class="toc-text">photoprism 配置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%EF%BC%88%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86%EF%BC%89"><span class="toc-number">3.4.2.1.</span> <span class="toc-text">基础配置（存储管理）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#flame-%E9%85%8D%E7%BD%AE"><span class="toc-number">3.4.3.</span> <span class="toc-text">flame 配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenWRT"><span class="toc-number">3.5.</span> <span class="toc-text">OpenWRT</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="toc-number">3.5.1.</span> <span class="toc-text">虚拟化配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A9%BA%E9%97%B4%E6%8B%93%E5%B1%95"><span class="toc-number">3.5.2.</span> <span class="toc-text">空间拓展</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OpenWRT-%E9%85%8D%E7%BD%AE"><span class="toc-number">3.5.3.</span> <span class="toc-text">OpenWRT 配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenVPN%E9%85%8D%E7%BD%AE"><span class="toc-number">4.</span> <span class="toc-text">OpenVPN配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenVPN%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">4.1.</span> <span class="toc-text">OpenVPN服务器配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-1"><span class="toc-number">4.1.1.</span> <span class="toc-text">安装</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenVPN%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">4.2.</span> <span class="toc-text">OpenVPN客户端配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenVPN-OpenWRT-%E9%85%8D%E7%BD%AE"><span class="toc-number">4.3.</span> <span class="toc-text">OpenVPN &amp; OpenWRT 配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E7%BD%91%E7%AB%99%E9%93%BE%E6%8E%A5"><span class="toc-number">6.</span> <span class="toc-text">参考网站链接</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&text=Truenas AIO 配置小记"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&is_video=false&description=Truenas AIO 配置小记"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Truenas AIO 配置小记&body=Check out this article: https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&title=Truenas AIO 配置小记"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&name=Truenas AIO 配置小记&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://kevintong9.github.io/blog/2024/01/11/Truenas-AIO-%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/&t=Truenas AIO 配置小记"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2024
+    Kt Tol
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/blog/">首页</a></li><!--
+     --><!--
+       --><li><a href="/blog/about/">关于</a></li><!--
+     --><!--
+       --><li><a href="/blog/archives/">归档</a></li><!--
+     --><!--
+       --><li><a target="_blank" rel="noopener" href="https://github.com/KevinTong9">项目</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板！\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功！");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/blog/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+  <script type="text/javascript">
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?0927cad4cfcdc315bfb53e77070dbd8e";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
